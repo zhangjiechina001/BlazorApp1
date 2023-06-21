@@ -1,0 +1,74 @@
+﻿@using BlazorApp1.Data;
+@using System.Diagnostics.CodeAnalysis;
+@using Microsoft.Extensions.Localization;
+@using System.ComponentModel.DataAnnotations;
+
+
+<div class="col-12 col-sm-12">
+    <Chart @ref="LineChart" OnInitAsync="()=>OnInit(0.1f,false)" Width="70%"></Chart>
+</div>
+
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+    private DateTimeRangeValue DateTimeRangeValue { get; set; } = new();
+    private Random Randomer { get; } = new Random();
+    private int LineDatasetCount = 1;
+    private int LineDataCount = 10240;
+
+    private Chart? LineChart { get; set; }
+
+    private Model Model1 = new Model();
+    [NotNull]
+    private List<SelectedItem>? Hobbys { get; set; } = new List<SelectedItem>();
+
+    private Task<ChartDataSource> OnInit(float tension, bool hasNull)
+    {
+        var ds = new ChartDataSource();
+        ds.Options.Title = "Line 折线图";
+        ds.Options.X.Title = "波长/nm";
+        ds.Options.Y.Title = "能量/J";
+        ds.Options.ShowLegend = false;
+        ds.Options.BorderWidth = 0.1;
+        //ds.Type = "--";
+        ds.Labels = Enumerable.Range(1, LineDataCount).Select(i => i.ToString());
+        for (var index = 0; index < LineDatasetCount; index++)
+        {
+            ds.Data.Add(new ChartDataset()
+                {
+                    Tension = tension,
+                    PointStyle = ChartPointStyle.Line,
+                    Data = Enumerable.Range(1, LineDataCount).Select(i =>
+                    {
+                        double value = ((double)i);
+                        return (object)Math.Cos(value*0.005);
+                    })
+                });
+        }
+
+        Hobbys.Add(new SelectedItem("足球", "足球"));
+        Hobbys.Add(new SelectedItem("排球", "排球"));
+        Hobbys.Add(new SelectedItem("羽毛球", "羽毛球"));
+        return Task.FromResult(ds);
+    }
+
+    class Model
+    {
+        [Display(Name = "姓名")]
+        public string Name { get; set; }
+
+        [Display(Name = "序列号")]
+        public string Id { get; set; }
+
+        [Required(ErrorMessage = "请选择一种{0}")]
+        [Display(Name = "爱好")]
+        [AutoGenerateColumn(Order = 70, Editable = false)]
+        public IEnumerable<string> Hobby { get; set; } = new List<string>();
+
+    }
+}
+

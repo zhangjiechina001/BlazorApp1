@@ -1,0 +1,61 @@
+﻿@page "/mytable"
+@using System.Diagnostics.CodeAnalysis;
+@using BlazorApp1.Data;
+@using Microsoft.Extensions.Localization;
+
+<Button Icon="fa-solid fa-arrows-rotate" Text="@RefreshText" OnClick="OnClick" class="my-2" />
+
+<Table TItem="Person" ShowTopPagination="true" IsPagination="true" PageItemsSource="@PageItemsSource" OnQueryAsync="@OnQueryAsync">
+    <TableColumns>
+        <TableColumn @bind-Field="@context.Id" Filterable="true" Sortable="true"/>
+        <TableColumn @bind-Field="@context.Name" />
+        <TableColumn @bind-Field="@context.Age" />
+        <TableColumn @bind-Field="@context.Address" />
+    </TableColumns>
+</Table>
+
+@code {
+    /// <summary>
+    /// Foo 类为Demo测试用，如有需要请自行下载源码查阅
+    /// Foo class is used for Demo test, please download the source code if necessary
+    /// https://gitee.com/LongbowEnterprise/BootstrapBlazor/blob/main/src/BootstrapBlazor.Shared/Data/Foo.cs
+    /// </summary>
+    [NotNull]
+    private List<Person>? Items { get; set; }
+
+    [NotNull]
+    private string? RefreshText { get; set; } = "刷新";
+
+    /// <summary>
+    /// OnInitialized
+    /// </summary>
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        //获取随机数据
+        //Get random data
+        Items = Person.GeneratorItems();
+    }
+
+    private void OnClick()
+    {
+        Items = Person.GeneratorItems();
+    }
+    private static IEnumerable<int> PageItemsSource => new int[] { 4, 10, 20, 40, 80, 100 };
+    private Task<QueryData<Person>> OnQueryAsync(QueryPageOptions options)
+    {
+        IEnumerable<Person> items = Items;
+        var total = items.Count();
+        items = items.Skip((options.PageIndex - 1) * options.PageItems).Take(options.PageItems).ToList();
+
+        return Task.FromResult(new QueryData<Person>()
+        {
+            Items=items,
+            TotalCount = total,
+            IsSorted = true,
+            IsFiltered = true,
+            IsSearch = true
+        });
+    }
+}
+

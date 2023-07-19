@@ -4,6 +4,7 @@
 
 using BootstrapBlazor.Components;
 using BootstrapBlazor.OnlyServer1.Data;
+using System.Collections;
 
 namespace BootstrapBlazor.Shared;
 
@@ -37,6 +38,11 @@ public class FooSearchModel : ITableSearchModel
     public static List<string> GetAllHobbys()
     {
         return new List<string>() { "打游戏", "下棋", "编程", "踢足球" };
+    }
+
+    public IEnumerable<IFilterAction> GetSearches()
+    {
+        return GetSearchs();
     }
 
     /// <summary>

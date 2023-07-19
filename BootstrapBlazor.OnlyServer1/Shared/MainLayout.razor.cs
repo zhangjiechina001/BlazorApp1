@@ -33,6 +33,8 @@ namespace BootstrapBlazor.OnlyServer1.Shared
             base.OnInitialized();
 
             Menus = GetIconSideMenuItems();
+            ShowFooter = false;
+            UseTabSet = false;
         }
 
         private static List<MenuItem> GetIconSideMenuItems()
@@ -44,8 +46,7 @@ namespace BootstrapBlazor.OnlyServer1.Shared
             new MenuItem() { Text = "Counter", Icon = "fa-solid fa-fw fa-check-square", Url = "/counter" },
             new MenuItem() { Text = "FetchData", Icon = "fa-solid fa-fw fa-database", Url = "fetchdata" },
             new MenuItem() { Text = "Table", Icon = "fa-solid fa-fw fa-table", Url = "table" },
-            new MenuItem() { Text = "花名册", Icon = "fa-solid fa-fw fa-users", Url = "users" },
-            new MenuItem() { Text = "自定义表格", Icon = "fa-solid fa-fw fa-table", Url = "mytable" }
+            new MenuItem() { Text = "数据查询", Icon = "fa-solid fa-fw fa-table", Url = "mytable" }
         };
 
             return menus;

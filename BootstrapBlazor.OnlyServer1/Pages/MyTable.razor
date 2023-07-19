@@ -15,10 +15,10 @@
            OnAddAsync="@OnAddAsync" OnSaveAsync="@OnSaveAsync" OnDeleteAsync="@OnDeleteAsync">
         <TableColumns>
             <TableColumn @bind-Field="@context.DateTime" Width="180" Searchable="true"/>
-            <TableColumn @bind-Field="@context.Name" Searchable="true">
-            </TableColumn>
+            <TableColumn @bind-Field="@context.Name" Searchable="true"></TableColumn>
             <TableColumn @bind-Field="@context.Address" />
             <TableColumn @bind-Field="@context.Education" />
+            @*<TableColumn IsReadonlyWhenEdit="true" @bind-PropertyType="@context.SampleDetail" />*@
         </TableColumns>
         <DetailRowTemplate>
             <MyRowDetail/>
@@ -135,7 +135,7 @@
     private IEnumerable<Foo> SearchModelQuery(QueryPageOptions options)
     {
         IEnumerable<Foo> items = Items;
-
+        return Items;
         List<List<IFilterAction>> allFilters =new List<List<IFilterAction>> { options.AdvanceSearchs, options.CustomerSearchs, options.Searchs };
         if(!allFilters.SelectMany(t=>t).Any())
         {
@@ -150,7 +150,7 @@
             }
         }
 
-        return items;
+        return Items;
     }
 
 }

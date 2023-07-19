@@ -2,24 +2,6 @@
 @attribute [TabItemOption(Text = "Table")]
 <PageTitle>Table</PageTitle>
 
-<h1>Table - 固定标签页</h1>
-
-<GroupBox Title="表单示例" style="margin-top: 1.5rem;">
-    <ValidateForm Model="@Model">
-        <div class="row g-4">
-            <div class="col-12 col-sm-6">
-                <DateTimeRange @bind-Value="@Model.DateTimeRangeValue" />
-            </div>
-            <div class="col-12 col-sm-6">
-                <CheckboxList @bind-Value="@Model.Location" Items="@Locations" />
-            </div>
-            <div class="col-12 col-sm-6">
-                <Button ButtonType="ButtonType.Submit" Icon="fa-fw fa-solid fa-floppy-disk" Text="提交" />
-            </div>
-        </div>
-
-    </ValidateForm>
-</GroupBox>
 
 <Table TItem="Foo" IsPagination="true" PageItemsSource="PageItemsSource" class="table-demo"
        IsStriped="true" IsBordered="true" ShowSkeleton="true" IsMultipleSelect="true"

@@ -7,6 +7,7 @@ using BootstrapBlazor.Components;
 using Microsoft.Extensions.Localization;
 
 using System.ComponentModel.DataAnnotations;
+using System.Text;
 
 namespace BootstrapBlazor.OnlyServer1.Data
 {
@@ -69,6 +70,26 @@ namespace BootstrapBlazor.OnlyServer1.Data
         [Display(Name = "学历")]
         [AutoGenerateColumn(Order = 60)]
         public EnumEducation? Education { get; set; }
+
+        [Display(Name = "元素值")]
+        public string? SampleDetail
+        {
+            get
+            {
+                Dictionary<String, double> dic =new Dictionary<string, double>
+                {
+                    {"Cu",20.89 },
+                    {"Zn",21.99 }
+                };
+                StringBuilder sb= new StringBuilder();
+                foreach (var item in dic)
+                {
+                    sb.Append($"{item.Key}:{item.Value}\t");
+                }
+                return sb.ToString();
+            }
+
+        }
 
         /// <summary>
         ///

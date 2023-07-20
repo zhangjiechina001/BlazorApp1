@@ -5,10 +5,13 @@
 
 
 <div class="col-12 col-sm-12">
-    <Chart @ref="LineChart" OnInitAsync="()=>OnInit(0.1f,false)"  Width="80%"></Chart>
+    <Chart @ref="LineChart" OnInitAsync="()=>OnInit(0.1f,false)" Width="80%"></Chart>
 </div>
 
 @code {
+    [Parameter]
+    public int ValueType { get; set; }
+
     private int currentCount = 0;
 
     private void IncrementCount()
@@ -18,7 +21,7 @@
     private DateTimeRangeValue DateTimeRangeValue { get; set; } = new();
     private Random Randomer { get; } = new Random();
     private int LineDatasetCount = 1;
-    private int LineDataCount = 8000;
+    private int LineDataCount = 30;
 
     private Chart? LineChart { get; set; }
 
@@ -29,12 +32,11 @@
     private Task<ChartDataSource> OnInit(float tension, bool hasNull)
     {
         var ds = new ChartDataSource();
-        ds.Options.Title = "Line 折线图";
+        ds.Options.Title = "光谱图";
         ds.Options.X.Title = "波长/nm";
         ds.Options.Y.Title = "能量/J";
         ds.Options.ShowLegend = false;
-        ds.Options.BorderWidth = 1.0;
-        //ds.Type = "--";
+        ds.Options.BorderWidth = 2.0;
         ds.Labels = Enumerable.Range(1, LineDataCount).Select(i => i.ToString());
         for (var index = 0; index < LineDatasetCount; index++)
         {
@@ -42,11 +44,11 @@
                 {
                     Tension = tension,
                     PointStyle = ChartPointStyle.Line,
-
+                   
                     Data = Enumerable.Range(1, LineDataCount).Select(i =>
                     {
                         double value = ((double)i);
-                        return (object)(Math.Tan(value*0.005)*1000);
+                        return (object)(ValueType%2==0?Math.Tan(value*0.5)*1000:Math.Cos(value*0.008)*1000);
                     }),
                    
                 });

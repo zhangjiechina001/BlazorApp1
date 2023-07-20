@@ -88,7 +88,7 @@ namespace BootstrapBlazor.OnlyServer1.Data
                 }
                 return sb.ToString();
             }
-
+            set { }
         }
 
         /// <summary>

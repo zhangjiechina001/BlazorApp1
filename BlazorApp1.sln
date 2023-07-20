@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BootstrapBlazor.OnlyServer1
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BootstrapBlazor.DataManager", "BootstrapBlazor.DataManager\BootstrapBlazor.DataManager.csproj", "{BE39DA01-11F9-48B4-B910-C72CFD422784}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataImport", "DataImport\DataImport.csproj", "{30377068-AFD2-4483-89C9-2FEAA8BECB74}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{BE39DA01-11F9-48B4-B910-C72CFD422784}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE39DA01-11F9-48B4-B910-C72CFD422784}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE39DA01-11F9-48B4-B910-C72CFD422784}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30377068-AFD2-4483-89C9-2FEAA8BECB74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30377068-AFD2-4483-89C9-2FEAA8BECB74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30377068-AFD2-4483-89C9-2FEAA8BECB74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30377068-AFD2-4483-89C9-2FEAA8BECB74}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

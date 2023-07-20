@@ -5,9 +5,9 @@
 @inject IStringLocalizer<Foo> FooLocalizer
 
 <div>
-    <Table TItem="Foo"
-           IsPagination="true" PageItemsSource="@PageItemsSource"
-           IsStriped="true" IsBordered="true"
+    <Table TItem="Foo" 
+           IsPagination="true" PageItemsSource="@PageItemsSource" ShowLineNo="true"
+           IsStriped="true" IsBordered="true" IsDetails="true"
            ShowToolbar="true" ShowSearch="true" IsMultipleSelect="true" ShowExtendButtons="true"
            AddModalTitle="增加测试数据窗口" EditModalTitle="编辑测试数据窗口"
            CustomerSearchModel="@CustomerSearchModel" ShowEmpty="true" SearchMode="SearchMode.Top"
@@ -18,10 +18,10 @@
             <TableColumn @bind-Field="@context.Name" Searchable="true"></TableColumn>
             <TableColumn @bind-Field="@context.Address" />
             <TableColumn @bind-Field="@context.Education" />
-            @*<TableColumn IsReadonlyWhenEdit="true" @bind-PropertyType="@context.SampleDetail" />*@
+            <TableColumn IsReadonlyWhenEdit="true" @bind-Field="@context.SampleDetail" />
         </TableColumns>
         <DetailRowTemplate>
-            <MyRowDetail/>
+            <MyRowDetail ValueType=context.Id/>
         </DetailRowTemplate>
         <CustomerSearchTemplate>
             <GroupBox Title="搜索条件">
@@ -45,7 +45,7 @@
 
     private Foo SearchModel { get; set; } = new Foo();
 
-    private static IEnumerable<int> PageItemsSource => new int[] { 10, 20, 40 };
+    private static IEnumerable<int> PageItemsSource => new int[] { 10, 15, 20 };
 
     private IEnumerable<SelectedItem>? SearchItems { get; set; }
 

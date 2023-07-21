@@ -29,12 +29,6 @@ namespace DataImport.Data
         [NotMapped]
         public int[] Intensity { get; set; }
 
-        public byte[] IntensityJson
-        {
-            get => ConvertDoubleArrayToByteArray
-            set => Intensity = value?.Split(',').Select(int.Parse).ToArray();
-        }
-
         public static byte[] ConvertDoubleArrayToByteArray(double[] doubleArray)
         {
             byte[] byteArray = new byte[doubleArray.Length * sizeof(double)];

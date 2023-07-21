@@ -42,10 +42,10 @@ namespace BootstrapBlazor.OnlyServer1.Shared
             var menus = new List<MenuItem>
             {
                 new MenuItem() { Text = "Index", Icon = "fa-solid fa-fw fa-flag", Url = "/" , Match = NavLinkMatch.All},
-                new MenuItem() { Text = "Counter", Icon = "fa-solid fa-fw fa-check-square", Url = "/counter" },
+                new MenuItem() { Text = "Counter", Icon = "fa-solid fa-fw fa-check-square", Url = "counter" },
                 new MenuItem() { Text = "FetchData", Icon = "fa-solid fa-fw fa-database", Url = "fetchdata" },
                 new MenuItem() { Text = "Table", Icon = "fa-solid fa-fw fa-table", Url = "table" },
-                new MenuItem() { Text = "数据查询", Icon = "fa-solid fa-fw fa-table", Url = "mytable" }
+                new MenuItem() { Text = "数据查询", Icon = "fa-solid fa-fw fa-table", Url = "data-inquire" }
             };
 
             return menus;

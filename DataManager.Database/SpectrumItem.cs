@@ -9,7 +9,7 @@ using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataImport.Data
+namespace DataManager.Database
 {
     public class SpectrumItem
     {

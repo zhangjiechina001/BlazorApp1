@@ -9,7 +9,7 @@ namespace BootstrapBlazor.OnlyServer1.Shared
     /// </summary>
     public sealed partial class MainLayout
     {
-        private bool UseTabSet { get; set; } = true;
+        private bool UseTabSet { get; set; } = false;
 
         private string Theme { get; set; } = "";
 

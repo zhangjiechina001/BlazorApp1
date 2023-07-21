@@ -44,7 +44,7 @@ namespace DataManager.BlazorServer.Shared
             new MenuItem() { Text = "Counter", Icon = "fa-solid fa-fw fa-check-square", Url = "/counter" },
             new MenuItem() { Text = "FetchData", Icon = "fa-solid fa-fw fa-database", Url = "fetchdata" },
             new MenuItem() { Text = "数据查询", Icon = "fa-solid fa-fw fa-table", Url = "data-inquire" },
-            new MenuItem() { Text = "花名册", Icon = "fa-solid fa-fw fa-users", Url = "users" }
+            new MenuItem() { Text = "数据上传", Icon = "fa-solid fa-fw fa-users", Url = "data-upload" }
         };
 
             return menus;

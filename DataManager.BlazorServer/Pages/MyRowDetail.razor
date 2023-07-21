@@ -1,0 +1,64 @@
+﻿@using System.Diagnostics.CodeAnalysis;
+@using Microsoft.Extensions.Localization;
+@using System.ComponentModel.DataAnnotations;
+
+
+<div class="col-12 col-sm-12">
+    <Chart @ref="LineChart" OnInitAsync="()=>OnInit(0.1f,false)" Width="80%"></Chart>
+</div>
+
+@code {
+    [Parameter]
+    public SpectrumInquireItem? Item { get; set; }
+
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+    private DateTimeRangeValue DateTimeRangeValue { get; set; } = new();
+    private Random Randomer { get; } = new Random();
+    private int LineDatasetCount = 1;
+    private int LineDataCount = 30;
+
+    private Chart? LineChart { get; set; }
+
+    private Model Model1 = new Model();
+    [NotNull]
+    private List<SelectedItem>? Hobbys { get; set; } = new List<SelectedItem>();
+
+    private Task<ChartDataSource> OnInit(float tension, bool hasNull)
+    {
+        var ds = new ChartDataSource();
+        ds.Options.Title = "光谱图";
+        ds.Options.X.Title = "波长/nm";
+        ds.Options.Y.Title = "能量/J";
+        ds.Options.ShowLegend = false;
+        ds.Labels = Enumerable.Range(1, Item.GetSpectrum().Count).Select(i => i.ToString());
+        ds.Data.Add(new ChartDataset()
+            {
+                Tension = tension,
+                PointStyle = ChartPointStyle.Dash,
+                BorderWidth = 0.8,
+                Data = Item?.GetSpectrum().Select(t => (object)(t.Item2))
+            });
+        return Task.FromResult(ds);
+    }
+
+    class Model
+    {
+        [Display(Name = "姓名")]
+        public string Name { get; set; }
+
+        [Display(Name = "序列号")]
+        public string Id { get; set; }
+
+        [Required(ErrorMessage = "请选择一种{0}")]
+        [Display(Name = "爱好")]
+        [AutoGenerateColumn(Order = 70, Editable = false)]
+        public IEnumerable<string> Hobby { get; set; } = new List<string>();
+
+    }
+}
+

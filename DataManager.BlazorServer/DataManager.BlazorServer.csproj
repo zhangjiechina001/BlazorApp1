@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <PackageReference Include="BootstrapBlazor" Version="7.*" />
+    <PackageReference Include="BootstrapBlazor.Chart" Version="7.6.0" />
   </ItemGroup>
 
   <ItemGroup>

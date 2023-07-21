@@ -1,0 +1,123 @@
+﻿@page "/data-inquire"
+@using DataManager.BlazorServer.Shared;
+@using Microsoft.Extensions.Localization;
+@using System.Diagnostics.CodeAnalysis;
+@inject IStringLocalizer<Foo> FooLocalizer
+
+<div>
+    <Table TItem="SpectrumInquireItem" 
+           IsPagination="true" PageItemsSource="@PageItemsSource" ShowLineNo="true"
+           IsStriped="true" IsBordered="true" IsDetails="true"
+           ShowToolbar="true" ShowSearch="true" IsMultipleSelect="true"
+           AddModalTitle="增加测试数据窗口" EditModalTitle="编辑测试数据窗口"
+           CustomerSearchModel="@CustomerSearchModel" ShowEmpty="true" SearchMode="SearchMode.Top" Items="@Items">
+        <TableColumns>
+            <TableColumn @bind-Field="@context.HaveLabel" Searchable="true" IsReadonlyWhenEdit="true"/>
+            <TableColumn @bind-Field="@context.Location" Searchable="true"></TableColumn>
+            <TableColumn @bind-Field="@context.MashineId" />
+            <TableColumn @bind-Field="@context.CreateTime" />
+            <TableColumn IsReadonlyWhenEdit="true" @bind-Field="@context.SavePath" />
+        </TableColumns>
+        <DetailRowTemplate>
+            <MyRowDetail Item="@context"></MyRowDetail>
+        </DetailRowTemplate>
+        <CustomerSearchTemplate>
+            <GroupBox Title="搜索条件">
+                @if (context is FooSearchModel model)
+                {
+                    <FooSearch @bind-Value="@model" />
+                }
+            </GroupBox>
+        </CustomerSearchTemplate>
+    </Table>
+</div>
+
+@code {
+    /// <summary>
+    /// Foo 类为Demo测试用，如有需要请自行下载源码查阅
+    /// Foo class is used for Demo test, please download the source code if necessary
+    /// https://gitee.com/LongbowEnterprise/BootstrapBlazor/blob/main/src/BootstrapBlazor.Shared/Data/Foo.cs
+    /// </summary>
+    [NotNull]
+    private List<SpectrumInquireItem>? Items { get; set; }
+
+    private Foo SearchModel { get; set; } = new Foo();
+
+    private static IEnumerable<int> PageItemsSource => new int[] { 10, 15, 20 };
+
+    private IEnumerable<SelectedItem>? SearchItems { get; set; }
+
+    private ITableSearchModel CustomerSearchModel { get; set; } = new FooSearchModel();
+
+    private List<Foo>? DisplayItems{ get; set; }
+
+    /// <summary>
+    /// OnInitialized 方法
+    /// </summary>
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        Items = SpectrumInquireItem.Inquire().ToList();
+
+        SearchItems = new List<SelectedItem>()
+        {
+            //new SelectedItem { Text = Localizer["SelectedItemText"].Value, Value = "" },
+            //new SelectedItem { Text = Localizer["SelectedItemText1"].Value, Value = Localizer["SelectedItemValue1"].Value },
+            //new SelectedItem { Text = Localizer["SelectedItemText2"].Value, Value = Localizer["SelectedItemValue2"].Value },
+        };
+    }
+
+    private static Task<Foo> OnAddAsync() => Task.FromResult(new Foo() { DateTime = DateTime.Now });
+
+    private static Task OnResetSearchAsync(Foo item)
+    {
+        item.Name = "";
+        item.Address = "";
+        return Task.CompletedTask;
+    }
+
+    private Task<QueryData<SpectrumInquireItem>> OnSearchModelQueryAsync(QueryPageOptions options)
+    {
+        // 自定义了 SearchModel
+        IEnumerable<SpectrumInquireItem> items = SpectrumInquireItem.Inquire();
+
+        // 设置记录总数
+        var total = items.Count();
+
+        // 内存分页
+        items = items.Skip((options.PageIndex - 1) * options.PageItems).Take(options.PageItems).ToList();
+
+        return Task.FromResult(new QueryData<SpectrumInquireItem>()
+            {
+                Items = items,
+                TotalCount = total,
+                IsSorted = true,
+                IsFiltered = true,
+                IsSearch = true,
+                IsAdvanceSearch = true
+            });
+    }
+
+    private IEnumerable<SpectrumInquireItem> SearchModelQuery(QueryPageOptions options)
+    {
+        IEnumerable<SpectrumInquireItem> items = Items;
+        return Items;
+        //List<List<IFilterAction>> allFilters =new List<List<IFilterAction>> { options.AdvanceSearchs, options.CustomerSearchs, options.Searchs };
+        //if(!allFilters.SelectMany(t=>t).Any())
+        //{
+        //    return new List<Foo>();
+        //}
+
+        //foreach (var filters in allFilters)
+        //{
+        //    if(filters.Any())
+        //    {
+        //        items = items.Where(filters.GetFilterFunc<Foo>());
+        //    }
+        //}
+
+        //return Items;
+    }
+
+}

@@ -37,7 +37,7 @@ namespace DataManager.Database
             };
             
             string dataPath = CreateSaveFilePath(dbSpectrumItem);
-            if(Directory.Exists(dataPath))
+            if(File.Exists(dataPath))
             {
                 return false;
             }
@@ -107,7 +107,18 @@ namespace DataManager.Database
 
         public string SavePath { get;set; }
 
+        specdata _data = null;
         [NotMapped]
-        public specdata Data { get; set; }
+        public specdata Data
+        {
+            get
+            {
+                if(_data== null)
+                {
+                    _data= specdata.Parser.ParseFrom(File.ReadAllBytes(SavePath));
+                }
+                return _data;
+            }
+        }
     }
 }

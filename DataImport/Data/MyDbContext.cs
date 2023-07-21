@@ -9,7 +9,7 @@ namespace DataImport.Data
 {
     public class MyDbContext:DbContext
     {
-        public DbSet<SpectrumItem> SpectrumItems { get; set; }
+        public DbSet<DbSpectrumItem> SpectrumItems { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

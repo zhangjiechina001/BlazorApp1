@@ -138,24 +138,13 @@ namespace DataImport
 
         private void btnExportDb_Click(object sender, EventArgs e)
         {
-            if(_data == null) 
+            if (_data == null)
             {
                 return;
             }
 
-            using (var dbContext = new MyDbContext())
-            {
-                dbContext.Database.EnsureCreated();
-                // 查询数据库中的实体
-                var entities = dbContext.SpectrumItems.ToList();
-
-                // 添加新实体
-                var newEntity = new SpectrumItem { SampleTime = DateTime.Now, Location = "铜陵", SpectrumLamb = _data.Speclamb.ToArray(), Intensity = _data.Intensity.ToArray() };
-                dbContext.SpectrumItems.Add(newEntity);
-                dbContext.SaveChanges();
-
-                Console.WriteLine("操作成功！");
-            }
+            SpectrumItem item=new SpectrumItem(_data);
+            item.Save();
         }
     }
 }

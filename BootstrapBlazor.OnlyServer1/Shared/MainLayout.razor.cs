@@ -40,14 +40,13 @@ namespace BootstrapBlazor.OnlyServer1.Shared
         private static List<MenuItem> GetIconSideMenuItems()
         {
             var menus = new List<MenuItem>
-        {
-            new MenuItem() { Text = "返回组件库", Icon = "fa-solid fa-fw fa-home", Url = "https://www.blazor.zone/components" },
-            new MenuItem() { Text = "Index", Icon = "fa-solid fa-fw fa-flag", Url = "/" , Match = NavLinkMatch.All},
-            new MenuItem() { Text = "Counter", Icon = "fa-solid fa-fw fa-check-square", Url = "/counter" },
-            new MenuItem() { Text = "FetchData", Icon = "fa-solid fa-fw fa-database", Url = "fetchdata" },
-            new MenuItem() { Text = "Table", Icon = "fa-solid fa-fw fa-table", Url = "table" },
-            new MenuItem() { Text = "数据查询", Icon = "fa-solid fa-fw fa-table", Url = "mytable" }
-        };
+            {
+                new MenuItem() { Text = "Index", Icon = "fa-solid fa-fw fa-flag", Url = "/" , Match = NavLinkMatch.All},
+                new MenuItem() { Text = "Counter", Icon = "fa-solid fa-fw fa-check-square", Url = "/counter" },
+                new MenuItem() { Text = "FetchData", Icon = "fa-solid fa-fw fa-database", Url = "fetchdata" },
+                new MenuItem() { Text = "Table", Icon = "fa-solid fa-fw fa-table", Url = "table" },
+                new MenuItem() { Text = "数据查询", Icon = "fa-solid fa-fw fa-table", Url = "mytable" }
+            };
 
             return menus;
         }

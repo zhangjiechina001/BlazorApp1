@@ -73,11 +73,11 @@
             btnExportDb.Name = "btnExportDb";
             btnExportDb.Size = new Size(83, 30);
             btnExportDb.TabIndex = 0;
-            btnExportDb.Text = "导出数据库";
+            btnExportDb.Text = "保存数据库";
             btnExportDb.UseVisualStyleBackColor = true;
             btnExportDb.Click += btnExportDb_Click;
             // 
-            // Form1
+            // FrmMain
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -87,7 +87,7 @@
             Controls.Add(btnExport);
             Controls.Add(btnLoadData);
             Icon = (Icon)resources.GetObject("$this.Icon");
-            Name = "Form1";
+            Name = "FrmMain";
             Text = "数据输入";
             Load += Form1_Load;
             ResumeLayout(false);

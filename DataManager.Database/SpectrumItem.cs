@@ -33,7 +33,8 @@ namespace DataManager.Database
                 Location = "铜陵",
                 WorkLocation = "一号口",
                 MashineId = "GS2200GABCDEFG",
-                CreateTime = dateTime1
+                CreateTime = dateTime1,
+                Data=_data
             };
             
             string dataPath = CreateSaveFilePath(dbSpectrumItem);
@@ -45,15 +46,9 @@ namespace DataManager.Database
             return SaveToDb(dbSpectrumItem);
         }
 
-        //private DateTime GetDateTime(string dtStr)
-        //{
-            
-        //}
-
         private void SaveToDisk(DbSpectrumItem dbSpectrumItem, string dataPath)
         {
             dbSpectrumItem.SavePath = dataPath;
-
             File.WriteAllBytes(dataPath, _data.ToByteArray());
         }
 
@@ -77,7 +72,6 @@ namespace DataManager.Database
                 dbSpectrum.MashineId,
             }; 
 
-            
             string dir = "F:\\光谱数据\\"+string.Join("\\", infoList);
             if(!Directory.Exists(dir))
             {
@@ -85,7 +79,7 @@ namespace DataManager.Database
             }
 
             infoList.Add(dbSpectrum.CreateTime.ToString("yyyyMMddHHmmss"));
-            string fileName=string.Join("-", infoList)+".pwb";
+            string fileName=string.Join("-", infoList)+ "_" + Path.GetFileName(dbSpectrum.Data.Filename);
             return Path.Combine(dir, fileName);
         }
     }
@@ -118,6 +112,10 @@ namespace DataManager.Database
                     _data= specdata.Parser.ParseFrom(File.ReadAllBytes(SavePath));
                 }
                 return _data;
+            }
+            set
+            {
+                _data = value;
             }
         }
     }

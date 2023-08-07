@@ -1,6 +1,7 @@
 ﻿@page "/data-upload"
 @using System.Diagnostics.CodeAnalysis;
 @using System.IO.Pipes;
+@using DataManager.Database;
 @using Microsoft.Extensions.Options;
 @*@inject IOptionsMonitor<WebsiteOptions> SiteOptions*@
 
@@ -15,9 +16,7 @@
         <input id="text1" class="form-control">
     </div>
     <div class="col-12">
-        <label for="text3" class="form-label">谱图数据</label>
-        <InputUpload TValue="string" ShowDeleteButton="true" OnChange="@OnFileChange" OnDelete="@OnFileDelete"></InputUpload>
-        <ButtonUpload TValue="string" IsMultiple="true" ShowProgress="true" OnChange="@OnClickToUpload" OnDelete="@(fileName => Task.FromResult(true))"></ButtonUpload>
+        <ButtonUpload TValue="string" BrowserButtonText="光谱数据" BrowserButtonIcon="fa-solid fa-cloud-arrow-up" IsMultiple="true" ShowProgress="true" OnChange="@OnClickToUpload" OnDelete="@(fileName => Task.FromResult(true))"></ButtonUpload>
     </div>
 </div>
 <ConsoleLogger @ref="Logger" class="mt-3" />
@@ -52,44 +51,51 @@
 
     private Task OnClickToUpload(UploadFile file)
     {
-        return Task.CompletedTask;
+        return SaveToFile(file);
     }
 
     private async Task<bool> SaveToFile(UploadFile file)
     {
+        //file.Size = 1024000;
         // Server Side 使用
         // Web Assembly 模式下必须使用 webapi 方式去保存文件到服务器或者数据库中
         // 生成写入文件名称
-        var ret = false;
-        if (!string.IsNullOrEmpty(SiteOptions.CurrentValue.WebRootPath))
-        {
-            var uploaderFolder = Path.Combine(SiteOptions.CurrentValue.WebRootPath, $"images{Path.DirectorySeparatorChar}uploader");
-            file.FileName = $"{Path.GetFileNameWithoutExtension(file.OriginFileName)}-{DateTimeOffset.Now:yyyyMMddHHmmss}{Path.GetExtension(file.OriginFileName)}";
-            var fileName = Path.Combine(uploaderFolder, file.FileName);
+        MemoryStream ms = new MemoryStream();
+        bool result=await file.SaveToFileAsync("F:\\Temp\\Temp.pwb",maxAllowedSize:7*1000*1000);
+        byte[] buffers = File.ReadAllBytes("F:\\Temp\\Temp.pwb");
+        //D:\\LibsData\\LIBS_20230624\\SGGL-6H1-20_230624001646\\Times_0.pwb
+        specdata data = specdata.Parser.ParseFrom(buffers);
+        SpectrumItem item = new SpectrumItem(data);
+        return item.Save();
+        //if (!string.IsNullOrEmpty(SiteOptions.CurrentValue.WebRootPath))
+        //{
+        //    var uploaderFolder = Path.Combine(SiteOptions.CurrentValue.WebRootPath, $"images{Path.DirectorySeparatorChar}uploader");
+        //    file.FileName = $"{Path.GetFileNameWithoutExtension(file.OriginFileName)}-{DateTimeOffset.Now:yyyyMMddHHmmss}{Path.GetExtension(file.OriginFileName)}";
+        //    var fileName = Path.Combine(uploaderFolder, file.FileName);
 
-            ReadToken ??= new CancellationTokenSource();
-            ret = await file.SaveToFileAsync(fileName, MaxFileLength, ReadToken.Token);
+        //    ReadToken ??= new CancellationTokenSource();
+        //    ret = await file.SaveToFileAsync(fileName, MaxFileLength, ReadToken.Token);
 
-            if (ret)
-            {
-                // 保存成功
-                file.PrevUrl = $"images/uploader/{file.FileName}";
-            }
-            else
-            {
-                var errorMessage = $"{Localizer["UploadsSaveFileError"]} {file.OriginFileName}";
-                file.Code = 1;
-                file.Error = errorMessage;
-                await ToastService.Error(Localizer["UploadFile"], errorMessage);
-            }
-        }
-        else
-        {
-            file.Code = 1;
-            file.Error = Localizer["UploadsWasmError"];
-            await ToastService.Information(Localizer["UploadsSaveFile"], Localizer["UploadsSaveFileMsg"]);
-        }
-        return ret;
+        //    if (ret)
+        //    {
+        //        // 保存成功
+        //        file.PrevUrl = $"images/uploader/{file.FileName}";
+        //    }
+        //    else
+        //    {
+        //        var errorMessage = $"{Localizer["UploadsSaveFileError"]} {file.OriginFileName}";
+        //        file.Code = 1;
+        //        file.Error = errorMessage;
+        //        await ToastService.Error(Localizer["UploadFile"], errorMessage);
+        //    }
+        //}
+        //else
+        //{
+        //    file.Code = 1;
+        //    file.Error = Localizer["UploadsWasmError"];
+        //    await ToastService.Information(Localizer["UploadsSaveFile"], Localizer["UploadsSaveFileMsg"]);
+        //}
+        //return ret;
     }
 }
 

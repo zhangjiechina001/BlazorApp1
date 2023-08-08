@@ -106,7 +106,7 @@ namespace DataManager.Database
             DateTime ret = DateTime.Now;
             if (location=="铜陵")
             {
-                string dtStr = foldName.Substring(foldName.Length - 13);
+                string dtStr = foldName.Substring(foldName.Length - 12).Replace("_", "");
                 string format = "yyMMddHHmmss";
                 DateTime.TryParseExact(dtStr, format, null, System.Globalization.DateTimeStyles.None, out ret);
             }
@@ -154,21 +154,6 @@ namespace DataManager.Database
 
         public bool Save()
         {
-            string dtStr = _data.Foldname.Substring(_data.Foldname.Length - 15).Replace("_", "");
-            string format = "yyyyMMddHHmmss";
-            DateTime dateTime1 = DateTime.Now;
-            DateTime.TryParseExact(dtStr, format, null, System.Globalization.DateTimeStyles.None, out dateTime1);
-            //先保存图片，在保存到数据库
-            DbSpectrumItem dbSpectrumItem = new DbSpectrumItem()
-            {
-                HaveLabel = false,
-                Location = "铜陵",
-                WorkLocation = "一号口",
-                MashineId = "GS2200GABCDEFG",
-                CreateTime = dateTime1,
-                Data = _data
-            };
-
             string dataPath = CreateSaveFilePath(this);
             if (File.Exists(dataPath))
             {

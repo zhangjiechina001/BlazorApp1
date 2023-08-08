@@ -1,17 +1,29 @@
 ﻿<div class="row form-inline g-3">
     <div class="col-12 col-sm-6">
-        <BootstrapInput @bind-Value="Value.Name" ShowLabel="true" DisplayText="姓名" />
+        <Select @bind-Value="Value.Location" Items="@Locations" OnSelectedItemChanged="@OnSelectItemChangedHandle" ShowLabel="true" DisplayText="地点" />
+    </div>
+    <div class="col-12 col-sm-6">
+        <Select @bind-Value="Value.WorkPosition" Items="@Positions" ShowLabel="true" DisplayText="工位" />
     </div>
     <div class="col-12 col-sm-6">
         <DateTimeRange @bind-Value="Value.SearchDate" ShowLabel="true" DisplayText="时间" />
     </div>
-    <div class="col-12 col-sm-6">
-        <Select @bind-Value="Value.Education" ShowLabel="true" DisplayText="学历" PlaceHolder="全部" />
-    </div>
-    <div class="col-12 col-sm-6">
-        <Select @bind-Value="Value.Count" ShowLabel="true" DisplayText="数量" Items="CountItems" />
-    </div>
-    <div class="col-12 col-sm-12">
-        <MultiSelect @bind-Value="Value.Hobbys" ShowLabel="true" DisplayText="爱好" Items="AllHobbys" />
-    </div>
 </div>
+
+@code
+{
+    private List<SelectedItem> Locations{ get; set; }
+    public List<SelectedItem> Positions { get; set; }
+
+    protected override Task OnInitializedAsync()
+    {
+        Locations = SepctrumSearchModel.GetLocations().Select(t=>new SelectedItem(t,t)).ToList();
+        return base.OnInitializedAsync();
+    }
+
+    private Task OnSelectItemChangedHandle(SelectedItem item)
+    {
+        Positions = SepctrumSearchModel.GetWorkPositions(item.Value).Select(t => new SelectedItem(t, t)).ToList();
+        return Task.FromResult("");
+    }
+}

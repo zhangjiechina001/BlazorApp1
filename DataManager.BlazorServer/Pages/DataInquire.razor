@@ -4,16 +4,18 @@
 @using System.Diagnostics.CodeAnalysis;
 @inject IStringLocalizer<Foo> FooLocalizer
 
+<h3>数据查询</h3>
 <div>
     <Table TItem="SpectrumInquireItem" 
            IsPagination="true" PageItemsSource="@PageItemsSource" ShowLineNo="true"
            IsStriped="true" IsBordered="true" IsDetails="true"
            ShowToolbar="true" ShowSearch="true" IsMultipleSelect="true"
            AddModalTitle="增加测试数据窗口" EditModalTitle="编辑测试数据窗口"
-           CustomerSearchModel="@CustomerSearchModel" ShowEmpty="true" SearchMode="SearchMode.Top" Items="@Items">
+           OnQueryAsync="@OnQueryAsync" CustomerSearchModel="@CustomerSearchModel" ShowEmpty="true" SearchMode="SearchMode.Top">
         <TableColumns>
             <TableColumn @bind-Field="@context.HaveLabel" Searchable="true" IsReadonlyWhenEdit="true"/>
             <TableColumn @bind-Field="@context.Location" Searchable="true"></TableColumn>
+            <TableColumn @bind-Field="@context.WorkLocation" Searchable="true"></TableColumn>
             <TableColumn @bind-Field="@context.MashineId" />
             <TableColumn @bind-Field="@context.CreateTime" />
             <TableColumn IsReadonlyWhenEdit="true" @bind-Field="@context.SavePath" />
@@ -23,7 +25,7 @@
         </DetailRowTemplate>
         <CustomerSearchTemplate>
             <GroupBox Title="搜索条件">
-                @if (context is FooSearchModel model)
+                @if (context is SepctrumSearchModel model)
                 {
                     <FooSearch @bind-Value="@model" />
                 }
@@ -47,7 +49,7 @@
 
     private IEnumerable<SelectedItem>? SearchItems { get; set; }
 
-    private ITableSearchModel CustomerSearchModel { get; set; } = new FooSearchModel();
+    private ITableSearchModel CustomerSearchModel { get; set; } = new SepctrumSearchModel();
 
     private List<Foo>? DisplayItems{ get; set; }
 
@@ -77,14 +79,14 @@
         return Task.CompletedTask;
     }
 
-    private Task<QueryData<SpectrumInquireItem>> OnSearchModelQueryAsync(QueryPageOptions options)
+    private Task<QueryData<SpectrumInquireItem>> OnQueryAsync(QueryPageOptions options)
     {
         // 自定义了 SearchModel
-        IEnumerable<SpectrumInquireItem> items = SpectrumInquireItem.Inquire();
+        IEnumerable<SpectrumInquireItem> items = options.CustomerSearches.Any() ? SpectrumInquireItem.Inquire(options.CustomerSearches):SpectrumInquireItem.Inquire();
 
         // 设置记录总数
         var total = items.Count();
-
+        var isAdvanceSearch = options.CustomerSearches.Any();
         // 内存分页
         items = items.Skip((options.PageIndex - 1) * options.PageItems).Take(options.PageItems).ToList();
 
@@ -95,29 +97,7 @@
                 IsSorted = true,
                 IsFiltered = true,
                 IsSearch = true,
-                IsAdvanceSearch = true
+                IsAdvanceSearch = isAdvanceSearch
             });
     }
-
-    private IEnumerable<SpectrumInquireItem> SearchModelQuery(QueryPageOptions options)
-    {
-        IEnumerable<SpectrumInquireItem> items = Items;
-        return Items;
-        //List<List<IFilterAction>> allFilters =new List<List<IFilterAction>> { options.AdvanceSearchs, options.CustomerSearchs, options.Searchs };
-        //if(!allFilters.SelectMany(t=>t).Any())
-        //{
-        //    return new List<Foo>();
-        //}
-
-        //foreach (var filters in allFilters)
-        //{
-        //    if(filters.Any())
-        //    {
-        //        items = items.Where(filters.GetFilterFunc<Foo>());
-        //    }
-        //}
-
-        //return Items;
-    }
-
 }

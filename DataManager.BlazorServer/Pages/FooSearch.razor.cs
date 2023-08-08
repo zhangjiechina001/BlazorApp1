@@ -16,13 +16,13 @@ namespace DataManager.BlazorServer.Pages
         /// </summary>
         [Parameter]
         [NotNull]
-        public FooSearchModel? Value { get; set; }
+        public SepctrumSearchModel? Value { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
         [Parameter]
-        public EventCallback<FooSearchModel> ValueChanged { get; set; }
+        public EventCallback<SepctrumSearchModel> ValueChanged { get; set; }
 
         /// <summary>
         /// 
@@ -35,7 +35,7 @@ namespace DataManager.BlazorServer.Pages
             new SelectedItem("3", "大于等于 70 小于 100")
         };
 
-        public List<SelectedItem> AllHobbys => FooSearchModel.GetAllHobbys().Select((t,index)=>new SelectedItem(index.ToString(),t)).ToList();
+        public List<SelectedItem> AllHobbys => SepctrumSearchModel.GetAllHobbys().Select((t,index)=>new SelectedItem(index.ToString(),t)).ToList();
     }
 
 }

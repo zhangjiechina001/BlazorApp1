@@ -9,14 +9,15 @@
 <div class="row g-3">
     <div class="col-12 col-sm-6">
         <label for="text1" class="form-label">地点</label>
-        <Select Value="@ChbTitle" Items="@Locations" />
+        <Select @bind-Value="@ChbTitle" Items="@Locations" />
     </div>
     <div class="col-12 col-sm-6">
         <label for="text1" class="form-label">工作位置</label> 
-        <input id="text1" class="form-control">
+        <Select @bind-Value="@WorkPosition" Items="@WorkPositions"/>
     </div>
     <div class="col-12">
-        <ButtonUpload TValue="string" BrowserButtonText="光谱数据" BrowserButtonIcon="fa-solid fa-cloud-arrow-up" IsMultiple="true" ShowProgress="true" OnChange="@OnClickToUpload" OnDelete="@(fileName => Task.FromResult(true))"></ButtonUpload>
+        <ButtonUpload TValue="string" BrowserButtonText="光谱数据" BrowserButtonIcon="fa-solid fa-cloud-arrow-up" IsMultiple="true" ShowProgress="true" OnChange="@OnClickToUpload" 
+        OnDelete="@(fileName => Task.FromResult(true))"></ButtonUpload>
     </div>
 </div>
 <ConsoleLogger @ref="Logger" class="mt-3" />
@@ -25,13 +26,20 @@
     [NotNull]
     private ConsoleLogger? Logger { get; set; }
 
-    private string? ChbTitle { get; set; } = "地点";
+    private string ChbTitle { get; set; } = "地点";
     public List<SelectedItem> Locations { get; set; } = new List<SelectedItem>();
+
+    private string? WorkPosition{ get; set; }
+    public List<SelectedItem> WorkPositions { get; set; } = new List<SelectedItem>();
 
     protected override Task OnInitializedAsync()
     {
         List<string> locations = new List<string> { "南京", "铜陵", "白银" };
         Locations = locations.Select(t => new SelectedItem(t, t)).ToList();
+
+        WorkPositions.Clear();
+        List<string> positions = new List<string> { "工位1", "工位2", "工位3" };
+        WorkPositions = positions.Select(t => new SelectedItem(t, t)).ToList();
         return Task.FromResult("");
     }
 
@@ -61,41 +69,14 @@
         // Web Assembly 模式下必须使用 webapi 方式去保存文件到服务器或者数据库中
         // 生成写入文件名称
         MemoryStream ms = new MemoryStream();
-        bool result=await file.SaveToFileAsync("F:\\Temp\\Temp.pwb",maxAllowedSize:7*1000*1000);
+        bool result=await file.SaveToFileAsync("F:\\Temp\\Temp.pwb",maxAllowedSize:20*1000*1000);
         byte[] buffers = File.ReadAllBytes("F:\\Temp\\Temp.pwb");
         //D:\\LibsData\\LIBS_20230624\\SGGL-6H1-20_230624001646\\Times_0.pwb
         specdata data = specdata.Parser.ParseFrom(buffers);
-        SpectrumItem item = new SpectrumItem(data);
+        DbSpectrumItem item = new DbSpectrumItem(data,ChbTitle);
+        item.Location = ChbTitle;
+        item.WorkLocation = WorkPosition;
         return item.Save();
-        //if (!string.IsNullOrEmpty(SiteOptions.CurrentValue.WebRootPath))
-        //{
-        //    var uploaderFolder = Path.Combine(SiteOptions.CurrentValue.WebRootPath, $"images{Path.DirectorySeparatorChar}uploader");
-        //    file.FileName = $"{Path.GetFileNameWithoutExtension(file.OriginFileName)}-{DateTimeOffset.Now:yyyyMMddHHmmss}{Path.GetExtension(file.OriginFileName)}";
-        //    var fileName = Path.Combine(uploaderFolder, file.FileName);
-
-        //    ReadToken ??= new CancellationTokenSource();
-        //    ret = await file.SaveToFileAsync(fileName, MaxFileLength, ReadToken.Token);
-
-        //    if (ret)
-        //    {
-        //        // 保存成功
-        //        file.PrevUrl = $"images/uploader/{file.FileName}";
-        //    }
-        //    else
-        //    {
-        //        var errorMessage = $"{Localizer["UploadsSaveFileError"]} {file.OriginFileName}";
-        //        file.Code = 1;
-        //        file.Error = errorMessage;
-        //        await ToastService.Error(Localizer["UploadFile"], errorMessage);
-        //    }
-        //}
-        //else
-        //{
-        //    file.Code = 1;
-        //    file.Error = Localizer["UploadsWasmError"];
-        //    await ToastService.Information(Localizer["UploadsSaveFile"], Localizer["UploadsSaveFileMsg"]);
-        //}
-        //return ret;
     }
 }
 

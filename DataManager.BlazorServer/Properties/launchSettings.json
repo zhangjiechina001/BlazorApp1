@@ -18,7 +18,7 @@
     "DataManager.BlazorServer": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "http://localhost:5200",
+      "applicationUrl": "http://*:5001",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

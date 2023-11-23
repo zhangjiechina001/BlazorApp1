@@ -9,7 +9,7 @@ namespace DataManager.BlazorServer.Data
         public SpectrumInquireItem() 
         { }
 
-        DbSpectrumItem? _item = null;
+        DbSpectrumItem _item;
         public SpectrumInquireItem(DbSpectrumItem item)
         {
             Location = item.Location;

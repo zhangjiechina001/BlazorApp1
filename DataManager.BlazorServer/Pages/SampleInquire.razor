@@ -1,0 +1,44 @@
+﻿@page "/sample-inquire"
+@using System.Diagnostics.CodeAnalysis;
+@using DataManager.Database.Data;
+
+<h3>样品数据查询</h3>
+<p></p>
+<div>
+    <Table TItem="DynamicObject" DynamicContext="DataTableDynamicContext"
+       IsMultipleSelect="true" IsBordered="false" IsStriped="true"
+           ShowToolbar="true" ShowExtendButtons="false" ShowSearch="true" SearchMode="SearchMode.Top"
+           CustomerSearchModel="@CustomerSearchModel">
+        <CustomerSearchTemplate>
+            <GroupBox Title="搜索条件">
+                @if (context is StandardDataSearchModel model)
+                {
+                    <StandardDataSearch @bind-Value="@model" />
+                }
+            </GroupBox>
+        </CustomerSearchTemplate>
+    </Table>
+</div>
+
+@code 
+{
+    private ITableSearchModel CustomerSearchModel { get; set; } = new StandardDataSearchModel();
+
+    [NotNull]
+    private DataTableDynamicContext? DataTableDynamicContext { get; set; }
+
+    public DateTimeRangeValue? SearchDate { get; set; }
+
+    private DataTableDynamicContext InitTable()
+    {
+        var myList=StandDataList.CreateSampleList();
+        DataTableDynamicContext result = new DataTableDynamicContext(myList.GetDataTeble());
+        return result;
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        DataTableDynamicContext = InitTable();
+    }
+}

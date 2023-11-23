@@ -4,11 +4,16 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationIcon>LIBSServer.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <Content Remove="Locales\en.json" />
     <Content Remove="Locales\zh.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="LIBSServer.ico" />
   </ItemGroup>
 
   <ItemGroup>

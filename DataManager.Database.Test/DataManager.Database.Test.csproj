@@ -16,4 +16,14 @@
     <PackageReference Include="coverlet.collector" Version="3.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DataManager.Database\DataManager.Database.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="LIBSDataBase">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

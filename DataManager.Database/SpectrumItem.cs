@@ -1,5 +1,4 @@
 ﻿using Google.Protobuf;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -54,12 +53,13 @@ namespace DataManager.Database
 
         private bool SaveToDb(DbSpectrumItem dbSpectrumItem)
         {
-            using(var dbContext = new MyDbContext())
-            {
-                dbContext.Database.EnsureCreated();
-                dbContext.SpectrumItems.Add(dbSpectrumItem);
-                return dbContext.SaveChanges()==1;
-            }
+            //using(var dbContext = new MyDbContext())
+            //{
+            //    dbContext.Database.EnsureCreated();
+            //    dbContext.SpectrumItems.Add(dbSpectrumItem);
+            //    return dbContext.SaveChanges()==1;
+            //}
+            return true;
         }
 
         public static string CreateSaveFilePath(DbSpectrumItem dbSpectrum)
@@ -171,12 +171,13 @@ namespace DataManager.Database
 
         private bool SaveToDb()
         {
-            using (var dbContext = new MyDbContext())
-            {
-                dbContext.Database.EnsureCreated();
-                dbContext.SpectrumItems.Add(this);
-                return dbContext.SaveChanges() == 1;
-            }
+            //using (var dbContext = new MyDbContext())
+            //{
+            //    dbContext.Database.EnsureCreated();
+            //    dbContext.SpectrumItems.Add(this);
+            //    return dbContext.SaveChanges() == 1;
+            //}
+            return true;
         }
 
         public static string CreateSaveFilePath(DbSpectrumItem dbSpectrum)

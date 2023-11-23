@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DataManager.Database
 {
-    public class MyDbContext:DbContext
+    public class MyDbContext : DbContext
     {
         public DbSet<DbSpectrumItem> SpectrumItems { get; set; }
 

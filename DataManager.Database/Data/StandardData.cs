@@ -4,11 +4,15 @@ namespace DataManager.Database.Data
 {
     public class StandardData
     {
+        public int Id { get; set; }
+
         public DateTime DateTime { get; set; }
 
-        public string SampleCode { get; set; }
+        public string SampleId { get; set; }
 
-        public string SampleType { get; set; }
+        public string MaterialType { get; set; }
+
+        public int Valid { get; set; }
 
         public double? GetFactorValue(string factorName)
         {

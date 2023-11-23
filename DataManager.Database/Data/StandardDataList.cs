@@ -20,7 +20,7 @@ namespace DataManager.Database.Data
 
         public List<string> GetAllSampleTypes()
         {
-            return this.Select(t => t.SampleType).Distinct().ToList();
+            return this.Select(t => t.MaterialType).Distinct().ToList();
         }
 
         public List<double> GetFactorValue(string factor)
@@ -44,8 +44,8 @@ namespace DataManager.Database.Data
                 var newRow = table.NewRow();
                 var item = this[i];
                 newRow[0] = item.DateTime.ToString("yyyy-MM-dd_hh:mm:ss");
-                newRow[1] = item.SampleCode;
-                newRow[2] = item.SampleType;
+                newRow[1] = item.SampleId;
+                newRow[2] = item.MaterialType;
                 for (int j = 0; j < table.Columns.Count - headerIndex; j++)
                 {
                     newRow[headerIndex + j] = item.Items[j].Value == null ? "--" : item.Items[j].Value.Value.ToString("G4");
@@ -65,8 +65,8 @@ namespace DataManager.Database.Data
                 StandardData item = new StandardData()
                 {
                     DateTime = dt.AddMinutes(1),
-                    SampleCode = "ABCDEFG",
-                    SampleType = "BTG",
+                    SampleId = "ABCDEFG",
+                    MaterialType = "BTG",
                 };
                 item.Items.Add(new StandardDataItem("Cu", 20.3));
                 item.Items.Add(new StandardDataItem("S", 20.3));

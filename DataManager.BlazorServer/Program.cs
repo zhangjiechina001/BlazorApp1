@@ -1,5 +1,5 @@
 ﻿using DataManager.BlazorServer.Data;
-
+using DataManager.Database.Data;
 using System.Text;
 
 
@@ -7,6 +7,10 @@ public class Program
 {
     public static void Main(string[] args)
     {
+        SqliteDatabase sqliteDatabase = SqliteDatabase.GetInstance();
+        string dbPath = "F:\\C#Project\\BlazorDataBoard\\DataManager.Database.Test\\bin\\Debug\\net6.0\\LIBSDataBase";
+        sqliteDatabase.Init(dbPath);
+
         var builder = WebApplication.CreateBuilder(args);
         // Add services to the container.
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);

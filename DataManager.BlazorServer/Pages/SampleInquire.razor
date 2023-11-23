@@ -5,17 +5,16 @@
 <h3>样品数据查询</h3>
 <p></p>
 <div>
+    <GroupBox Title="搜索条件">
+        <StandardDataSearch QueryClick="@OnQueryDataAsync"/>
+    </GroupBox>
+</div>
+<p></p>
+<div>
     <Table TItem="DynamicObject" DynamicContext="DataTableDynamicContext"
-       IsMultipleSelect="true" IsBordered="false" IsStriped="true"
-           ShowToolbar="true" ShowExtendButtons="false" ShowSearch="true" SearchMode="SearchMode.Top"
-           CustomerSearchModel="@CustomerSearchModel">
+        IsMultipleSelect="true" IsBordered="false" IsStriped="true"
+        ShowToolbar="true" ShowExtendButtons="false" ShowSearch="true" SearchMode="SearchMode.Top">
         <CustomerSearchTemplate>
-            <GroupBox Title="搜索条件">
-                @if (context is StandardDataSearchModel model)
-                {
-                    <StandardDataSearch @bind-Value="@model" />
-                }
-            </GroupBox>
         </CustomerSearchTemplate>
     </Table>
 </div>
@@ -40,5 +39,32 @@
     {
         base.OnInitialized();
         DataTableDynamicContext = InitTable();
+    }
+
+    private Task OnQueryDataAsync()
+    {
+        return Task.CompletedTask;
+    }
+
+    private Task<QueryData<SpectrumInquireItem>> OnQueryAsync(QueryPageOptions options)
+    {
+        // 自定义了 SearchModel
+        IEnumerable<SpectrumInquireItem> items = options.CustomerSearches.Any() ? SpectrumInquireItem.Inquire(options.CustomerSearches) : SpectrumInquireItem.Inquire();
+
+        // 设置记录总数
+        var total = items.Count();
+        var isAdvanceSearch = options.CustomerSearches.Any();
+        // 内存分页
+        items = items.Skip((options.PageIndex - 1) * options.PageItems).Take(options.PageItems).ToList();
+
+        return Task.FromResult(new QueryData<SpectrumInquireItem>()
+            {
+                Items = items,
+                TotalCount = total,
+                IsSorted = true,
+                IsFiltered = true,
+                IsSearch = true,
+                IsAdvanceSearch = isAdvanceSearch
+            });
     }
 }

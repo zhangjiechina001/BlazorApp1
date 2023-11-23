@@ -64,7 +64,7 @@ namespace DataManager.Database.Data
             }
         }
 
-        private List<string> GetAllTableName()
+        public List<string> GetAllTableName()
         {
             List<string> result=new List<string>();
             connection.Open();

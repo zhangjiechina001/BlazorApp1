@@ -1,32 +1,26 @@
 ﻿@using System.Diagnostics.CodeAnalysis;
+@using DataManager.Database.Data;
 
 <div class="row form-inline g-3">
     <div class="col-12 col-sm-4">
-        <Select @bind-Value="Value.Location" Items="@Locations" OnSelectedItemChanged="@OnSelectItemChangedHandle" ShowLabel="true" DisplayText="地点:" />
-    </div>
-    <div class="col-12 col-sm-4">
-        <Select @bind-Value="Value.WorkPosition" Items="@Positions" ShowLabel="true" DisplayText="工位:" />
+        <Select @bind-Value="Value.WorkPosition" Items="@WorkPositions" ShowLabel="true" DisplayText="工位:" />
     </div>
     <div class="col-12 col-sm-4">
         <DateTimeRange @bind-Value="Value.SearchDate" ShowLabel="true" DisplayText="时间:" />
+    </div>
+    <div class="col-12 col-sm-4">
+        <Button  ShowLabel="true" OnClick="OnClick"> 查询 </Button>
     </div>
 </div>
 
 @code
 {
-    private List<SelectedItem> Locations { get; set; } = new();
-    public List<SelectedItem> Positions { get; set; } = new();
+    public List<SelectedItem> WorkPositions { get; set; } = new();
 
     protected override Task OnInitializedAsync()
     {
-        Locations = SepctrumSearchModel.GetLocations().Select(t => new SelectedItem(t, t)).ToList();
+        WorkPositions = SqliteDatabase.GetInstance().GetAllTableName().Select(t => new SelectedItem(t, t)).ToList();
         return base.OnInitializedAsync();
-    }
-
-    private Task OnSelectItemChangedHandle(SelectedItem item)
-    {
-        Positions = SepctrumSearchModel.GetWorkPositions(item.Value).Select(t => new SelectedItem(t, t)).ToList();
-        return Task.FromResult("");
     }
 
     /// <summary>
@@ -34,7 +28,7 @@
     /// </summary>
     [Parameter]
     [NotNull]
-    public StandardDataSearchModel? Value { get; set; }
+    public StandardDataSearchModel? Value { get; set; } = new StandardDataSearchModel();
 
     /// <summary>
     ///
@@ -42,16 +36,15 @@
     [Parameter]
     public EventCallback<StandardDataSearchModel> ValueChanged { get; set; }
 
-    /// <summary>
-    ///
-    /// </summary>
-    public List<SelectedItem> CountItems { get; } = new List<SelectedItem>()
-        {
-            new SelectedItem("", "全部"),
-            new SelectedItem("1", "小于 30"),
-            new SelectedItem("2", "大于等于 30 小于 70"),
-            new SelectedItem("3", "大于等于 70 小于 100")
-        };
+    private void OnClick(MouseEventArgs? args)
+    {
+        QueryClick.InvokeAsync(Value);
+    }
 
-    public List<SelectedItem> AllHobbys => StandardDataSearchModel.GetAllHobbys().Select((t, index) => new SelectedItem(index.ToString(), t)).ToList();
+    /// <summary>
+    /// 获得/设置 OnClick 事件
+    /// </summary>
+    [Parameter]
+    public EventCallback<StandardDataSearchModel> QueryClick { get; set; }
+
 }

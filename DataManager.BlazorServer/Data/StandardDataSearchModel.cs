@@ -18,21 +18,9 @@ namespace DataManager.BlazorServer.Data
         /// <summary>
         /// 
         /// </summary>
-        public string? Location { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
         public string? WorkPosition { get; set; }
 
         public DateTimeRangeValue? SearchDate { get; set; }
-
-        public List<string> Hobbys { get; set; }=new List<string>();
-
-        public static List<string> GetAllHobbys()
-        {
-            return new List<string>() { "打游戏", "下棋", "编程", "踢足球" };
-        }
 
         public IEnumerable<IFilterAction> GetSearches()
         {
@@ -47,10 +35,6 @@ namespace DataManager.BlazorServer.Data
         public IEnumerable<IFilterAction> GetSearchs()
         {
             var ret = new List<IFilterAction>();
-            if (!string.IsNullOrEmpty(Location)&&Location!="所有地点")
-            {
-                ret.Add(new SearchFilterAction(nameof(SpectrumInquireItem.Location), Location));
-            }
             if (!string.IsNullOrEmpty(WorkPosition)&&WorkPosition!="所有工位")
             {
                 ret.Add(new SearchFilterAction(nameof(SpectrumInquireItem.WorkLocation), WorkPosition));
@@ -68,10 +52,8 @@ namespace DataManager.BlazorServer.Data
         /// </summary>
         public void Reset()
         {
-            Location = null;
             WorkPosition = null;
             SearchDate = null;
-            Hobbys.Clear();
         }
 
         public static List<string> GetWorkPositions(string location)

@@ -51,22 +51,20 @@ namespace DataManager.BlazorServer.Data
 
         public static IEnumerable<SpectrumInquireItem> Inquire()
         {
-            //using (MyDbContext context=new MyDbContext())
-            //{
-            //    return context.SpectrumItems.ToList().Select(t=>new SpectrumInquireItem(t));
-            //}
-            return null;
+            using (MyDbContext context = new MyDbContext())
+            {
+                return context.SpectrumItems.ToList().Select(t => new SpectrumInquireItem(t));
+            }
         }
 
 
         public static IEnumerable<SpectrumInquireItem> Inquire(IEnumerable<IFilterAction> filter)
         {
-            //using (MyDbContext context = new MyDbContext())
-            //{
-            //    var ret = context.SpectrumItems.Select(t => new SpectrumInquireItem(t)).Where(filter.GetFilterFunc<SpectrumInquireItem>()).ToList();
-            //    return ret;
-            //}
-            return null;
+            using (MyDbContext context = new MyDbContext())
+            {
+                var ret = context.SpectrumItems.Select(t => new SpectrumInquireItem(t)).Where(filter.GetFilterFunc<SpectrumInquireItem>()).ToList();
+                return ret;
+            }
         }
     }
 }

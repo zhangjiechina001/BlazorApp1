@@ -24,5 +24,18 @@ namespace DataManager.Database.Utils
             JObject obj = JObject.Parse(jsonContext);
             return obj;
         }
+
+        public static JObject LoadJsonFromFile(string filePath)
+        {
+            string absouutePath = Path.GetFullPath(filePath);
+            if (!File.Exists(absouutePath))
+            {
+                throw new IOException($"配置文件{absouutePath}未找到！");
+            }
+
+            string jsonContext = File.ReadAllText(absouutePath);
+            JObject obj = JObject.Parse(jsonContext);
+            return obj;
+        }
     }
 }

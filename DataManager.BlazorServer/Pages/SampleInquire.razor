@@ -1,6 +1,7 @@
 ﻿@page "/sample-inquire"
 @using System.Diagnostics.CodeAnalysis;
 @using DataManager.Database.Data;
+@inject MessageService MessageService
 
 <h3>样品数据查询</h3>
 <p></p>
@@ -13,9 +14,8 @@
 <div>
     <Table TItem="DynamicObject" DynamicContext="DataTableDynamicContext"
         IsMultipleSelect="true" IsBordered="false" IsStriped="true"
-        ShowToolbar="true" ShowExtendButtons="false" ShowSearch="true" SearchMode="SearchMode.Top">
-        <CustomerSearchTemplate>
-        </CustomerSearchTemplate>
+        ShowToolbar="true" ShowExtendButtons="false" ShowSearch="true"
+        IsFixedHeader="true">
     </Table>
 </div>
 
@@ -41,9 +41,25 @@
         DataTableDynamicContext = InitTable();
     }
 
-    private Task OnQueryDataAsync()
+    private Task OnQueryDataAsync(StandardDataSearchModel args)
     {
+        var myList = DBUtils.Inquire(args.WorkPosition);
+        if(!myList.Any())
+        {
+            
+        }
+        DataTableDynamicContext = new DataTableDynamicContext(myList.GetDataTeble());
         return Task.CompletedTask;
+    }
+
+    private async Task ShowColorMessage(Color color)
+    {
+        await MessageService.Show(new MessageOption()
+            {
+                Content = "This is a colored message",
+                Icon = "fa-solid fa-circle-info",
+                Color = color
+            });
     }
 
     private Task<QueryData<SpectrumInquireItem>> OnQueryAsync(QueryPageOptions options)

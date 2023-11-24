@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
@@ -8,6 +9,13 @@ using System.Threading.Tasks;
 
 namespace DataManager.Database.Data
 {
+    public class TableDictionaryItem
+    {
+        public string WorkPosition { get; set; } = "";
+
+        public string TableName { get; set; } = "";
+    }
+
     public class SqliteDatabase : IDisposable
     {
         private string _dbPath;
@@ -22,17 +30,33 @@ namespace DataManager.Database.Data
             this._dbPath = dbPath;
             string connectionString = $"Data Source={dbPath}";
             connection = new SQLiteConnection(connectionString);
+            connection.Open();
             return GetAllTableName().Count > 0;
+        }
+
+        public bool InitTableName(JArray objArr)
+        {
+            TableDictionaryItemList.Clear();
+            foreach (JObject objObj in objArr)
+            {
+                TableDictionaryItem item = new TableDictionaryItem
+                {
+                    WorkPosition = objObj["WorkPosition"].Value<string>(),
+                    TableName = objObj["TableName"].Value<string>()
+                };
+                TableDictionaryItemList.Add(item);
+            }
+            return true;
         }
 
         public void Dispose()
         {
+            connection?.Close();
             connection?.Dispose();
         }
 
         public List<StandardDbEntity> Inquire(string tableName)
         {
-            connection.Open();
             using (SQLiteCommand command = new SQLiteCommand($"SELECT * FROM {tableName}", connection))
             {
                 // 执行查询
@@ -67,17 +91,19 @@ namespace DataManager.Database.Data
         public List<string> GetAllTableName()
         {
             List<string> result=new List<string>();
-            connection.Open();
-            DataTable tables = connection.GetSchema("Tables");
-
-            foreach (DataRow row in tables.Rows)
+            lock (this)
             {
-                string tableName = row["TABLE_NAME"].ToString();
-                result.Add(tableName);
+                DataTable tables = connection.GetSchema("Tables");
+                foreach (DataRow row in tables.Rows)
+                {
+                    string tableName = row["TABLE_NAME"].ToString();
+                    result.Add(tableName);
+                }
             }
-            connection.Close();
             return result;
         }
+
+        public List<TableDictionaryItem> TableDictionaryItemList { get; } = new List<TableDictionaryItem>();
 
         private static SqliteDatabase _instance=new SqliteDatabase();
         public static SqliteDatabase GetInstance()

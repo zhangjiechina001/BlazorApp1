@@ -6,14 +6,17 @@ namespace DataManager.BlazorServer.Data
 {
     public class DBUtils
     {
-        //public static StandDataList Inquire()
-        //{
-        //    using (MyDbContext context = new MyDbContext())
-        //    {
-        //        return context.SpectrumItems.ToList().Select(t => new SpectrumInquireItem(t));
-        //    }
-        //}
+        public static StandDataList Inquire()
+        {
+            var entity=SqliteDatabase.GetInstance().Inquire("IngredientTbl_192_168_1_4New").Select(t=>t.ToStandardData()).ToList();
+            return new StandDataList(entity);
+        }
 
+        public static StandDataList Inquire(string tableName)
+        {
+            var entity = SqliteDatabase.GetInstance().Inquire(tableName).Select(t => t.ToStandardData()).ToList();
+            return new StandDataList(entity);
+        }
 
         public static StandDataList Inquire(IEnumerable<IFilterAction> filter)
         {

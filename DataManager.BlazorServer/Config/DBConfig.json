@@ -1,0 +1,29 @@
+{
+  "DbPath": "F:\\C#Project\\BlazorDataBoard\\DataManager.Database.Test\\LIBSDataBase",
+  "TableDictionary": [
+    {
+      "WorkPosition": "地点1",
+      "TableName": "IngredientTbl_192_168_1_4New"
+    },
+    {
+      "WorkPosition": "地点2",
+      "TableName": "IngredientTbl_192_168_1_5New"
+    },
+    {
+      "WorkPosition": "地点3",
+      "TableName": "IngredientTbl_192_168_1_6New"
+    },
+    {
+      "WorkPosition": "地点4",
+      "TableName": "IngredientTbl_192_168_1_7New"
+    },
+    {
+      "WorkPosition": "地点6",
+      "TableName": "IngredientTbl_192_168_1_8New"
+    },
+    {
+      "WorkPosition": "地点7",
+      "TableName": "IngredientTbl_192_168_1_9New"
+    }
+  ]
+}

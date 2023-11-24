@@ -19,7 +19,7 @@
 
     protected override Task OnInitializedAsync()
     {
-        WorkPositions = SqliteDatabase.GetInstance().GetAllTableName().Select(t => new SelectedItem(t, t)).ToList();
+        WorkPositions = SqliteDatabase.GetInstance().TableDictionaryItemList.Select(t => new SelectedItem(t.TableName, t.WorkPosition)).ToList();
         return base.OnInitializedAsync();
     }
 

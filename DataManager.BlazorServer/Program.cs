@@ -1,15 +1,15 @@
 ﻿using DataManager.BlazorServer.Data;
 using DataManager.Database.Data;
 using System.Text;
-
+using DataManager.Database.Utils;
+using Newtonsoft.Json.Linq;
+using BootstrapBlazor.Components;
 
 public class Program
 {
     public static void Main(string[] args)
     {
-        SqliteDatabase sqliteDatabase = SqliteDatabase.GetInstance();
-        string dbPath = "F:\\C#Project\\BlazorDataBoard\\DataManager.Database.Test\\bin\\Debug\\net6.0\\LIBSDataBase";
-        sqliteDatabase.Init(dbPath);
+        InitDb();
 
         var builder = WebApplication.CreateBuilder(args);
         // Add services to the container.
@@ -19,7 +19,7 @@ public class Program
         builder.Services.AddServerSideBlazor();
 
         builder.Services.AddBootstrapBlazor();
-
+        builder.Services.AddSingleton<MessageService>();
         builder.Services.AddSingleton<WeatherForecastService>();
 
         // 增加 Table 数据服务操作类
@@ -43,6 +43,15 @@ public class Program
         app.MapFallbackToPage("/_Host");
 
         app.Run();
+    }
+
+    private static void InitDb()
+    {
+        JObject obj=JsonUtils.LoadJson("DBConfig");
+        SqliteDatabase sqliteDatabase = SqliteDatabase.GetInstance();
+        string dbPath = obj["DbPath"].Value<string>();
+        sqliteDatabase.Init(dbPath);
+        sqliteDatabase.InitTableName(obj["TableDictionary"].Value<JArray>());
     }
 }
 

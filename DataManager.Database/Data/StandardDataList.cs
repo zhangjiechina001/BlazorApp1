@@ -46,10 +46,21 @@ namespace DataManager.Database.Data
                 newRow[0] = item.DateTime.ToString("yyyy-MM-dd_hh:mm:ss");
                 newRow[1] = item.SampleId;
                 newRow[2] = item.MaterialType;
-                for (int j = 0; j < table.Columns.Count - headerIndex; j++)
+
+                if (item.MaterialType=="未知")
                 {
-                    newRow[headerIndex + j] = item.Items[j].Value == null ? "--" : item.Items[j].Value.Value.ToString("G4");
-                };
+                    for (int j = 0; j < table.Columns.Count - headerIndex; j++)
+                    {
+                        newRow[headerIndex + j] = "--";
+                    }
+                }
+                else
+                {
+                    for (int j = 0; j < table.Columns.Count - headerIndex; j++)
+                    {
+                        newRow[headerIndex + j] = item.Items[j].Value == null ? "--" : item.Items[j].Value.Value.ToString("G4");
+                    }
+                }
                 table.Rows.Add(newRow);
             }
 
@@ -60,12 +71,12 @@ namespace DataManager.Database.Data
         {
             StandDataList result=new StandDataList();
             DateTime dt= DateTime.Now;
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 10; i++)
             {
                 StandardData item = new StandardData()
                 {
                     DateTime = dt.AddMinutes(1),
-                    SampleId = "ABCDEFG",
+                    SampleId = "示例数据",
                     MaterialType = "BTG",
                 };
                 item.Items.Add(new StandardDataItem("Cu", 20.3));

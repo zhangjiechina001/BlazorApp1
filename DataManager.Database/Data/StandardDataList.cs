@@ -45,7 +45,7 @@ namespace DataManager.Database.Data
                 var item = this[i];
                 newRow[0] = item.DateTime.ToString("yyyy-MM-dd_hh:mm:ss");
                 newRow[1] = item.SampleId;
-                newRow[2] = item.MaterialType;
+                newRow[2] = item.MaterialType.Replace("\r","");
 
                 if (item.MaterialType=="未知")
                 {

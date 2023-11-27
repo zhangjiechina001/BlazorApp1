@@ -21,9 +21,11 @@ public class Program
         builder.Services.AddBootstrapBlazor();
         builder.Services.AddSingleton<MessageService>();
         builder.Services.AddSingleton<WeatherForecastService>();
+        // 增加 Table Excel 导出服务
+        builder.Services.AddCsvExport();
 
         // 增加 Table 数据服务操作类
-        //builder.Services.AddTableDemoDataService();
+        builder.Services.AddTableDemoDataService();
 
         var app = builder.Build();
 

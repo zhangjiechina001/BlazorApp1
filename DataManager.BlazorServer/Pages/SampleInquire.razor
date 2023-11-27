@@ -1,6 +1,9 @@
 ﻿@page "/sample-inquire"
 @using System.Diagnostics.CodeAnalysis;
 @using DataManager.Database.Data;
+@using System.Text
+@using System.Data
+@using MiniExcelLibs
 @inject MessageService MessageService
 
 <h3>样品数据查询</h3>
@@ -14,14 +17,34 @@
 <div>
     <Table TItem="DynamicObject" DynamicContext="DataTableDynamicContext"
         IsMultipleSelect="true" IsBordered="false" IsStriped="true"
-        ShowToolbar="true" ShowExtendButtons="false" ShowSearch="true"
-        IsFixedHeader="true">
+        ShowToolbar="true" ShowAddButton="false" ShowEditButton="false" ShowDeleteButton="false"
+        ShowExportButton="true" IsFixedHeader="true"
+        IsPagination="true">
+        <ExportButtonDropdownTemplate>
+            <div class="dropdown-item" @onclick="ClipBoardExportAsync">
+                <i class="fa-regular fa-file-excel"></i>
+                <span>导出当前页到剪切板</span>
+            </div>
+            <div class="dropdown-item" @onclick="OnExportCsv">
+                <i class="fa-regular fa-file-excel" ></i>
+                <span>导出到CSV</span>
+            </div>
+        </ExportButtonDropdownTemplate>
     </Table>
+
 </div>
 
 @code 
 {
-    private ITableSearchModel CustomerSearchModel { get; set; } = new StandardDataSearchModel();
+    [Inject]
+    [NotNull]
+    private ClipboardService? ClipboardService { get; init; }
+
+    [Inject]
+    [NotNull]
+    private CsvExport? Export { get; set; }
+
+    private static IEnumerable<int> PageItemsSource => new int[] {  20, 30 };
 
     [NotNull]
     private DataTableDynamicContext? DataTableDynamicContext { get; set; }
@@ -41,46 +64,102 @@
         DataTableDynamicContext = InitTable();
     }
 
-    private Task OnQueryDataAsync(StandardDataSearchModel args)
+    private async Task OnQueryDataAsync(StandardDataSearchModel args)
     {
-        var myList = DBUtils.Inquire(args.WorkPosition);
-        if(!myList.Any())
+        var myList = DBUtils.Inquire(args);
+        if(myList.Any())
         {
-            
+            DataTableDynamicContext = new DataTableDynamicContext(myList.GetDataTeble());
         }
-        DataTableDynamicContext = new DataTableDynamicContext(myList.GetDataTeble());
-        return Task.CompletedTask;
+        else
+        {
+            await ShowColorMessage(Color.Danger, "未查询到符合条件的数据!");
+        }
     }
 
-    private async Task ShowColorMessage(Color color)
+    private async Task ShowColorMessage(Color color,string msg)
     {
         await MessageService.Show(new MessageOption()
             {
-                Content = "This is a colored message",
+                Content = msg,
                 Icon = "fa-solid fa-circle-info",
                 Color = color
             });
     }
 
-    private Task<QueryData<SpectrumInquireItem>> OnQueryAsync(QueryPageOptions options)
+    private async Task ClipBoardExportAsync()
     {
-        // 自定义了 SearchModel
-        IEnumerable<SpectrumInquireItem> items = options.CustomerSearches.Any() ? SpectrumInquireItem.Inquire(options.CustomerSearches) : SpectrumInquireItem.Inquire();
+        var table=DataTableDynamicContext.DataTable;
+        string[,] mat = ConvertMat(table);
+        string matStr = ArrayToCsvString(mat);
+        await ClipboardService.Copy(matStr);
+        await ShowColorMessage(Color.Info,"数据复制到剪贴板成功!");
+    }
 
-        // 设置记录总数
-        var total = items.Count();
-        var isAdvanceSearch = options.CustomerSearches.Any();
-        // 内存分页
-        items = items.Skip((options.PageIndex - 1) * options.PageItems).Take(options.PageItems).ToList();
+    private async Task OnExportCsv()
+    {
+        var table = DataTableDynamicContext.DataTable;
+        string[,] mat = ConvertMat(table);
+        bool result = await Export.ExportAsync(mat, ExcelType.CSV);
+        string resultStr = result ? "成功" : "失败";
+        await ShowColorMessage(Color.Info, $"数据导出CSV{resultStr}!");
+    }
 
-        return Task.FromResult(new QueryData<SpectrumInquireItem>()
+    private string[,] ConvertMat(DataTable dataTable)
+    {
+        int rowCount = dataTable.Rows.Count;
+        int colCount = dataTable.Columns.Count;
+
+        // 创建字符串数组，包含表头
+        string[,] resultArray = new string[rowCount + 1, colCount];
+
+        // 添加表头
+        for (int col = 0; col < colCount; col++)
+        {
+            resultArray[0, col] = dataTable.Columns[col].ColumnName;
+        }
+
+        // 添加数据
+        for (int row = 0; row < rowCount; row++)
+        {
+            for (int col = 0; col < colCount; col++)
             {
-                Items = items,
-                TotalCount = total,
-                IsSorted = true,
-                IsFiltered = true,
-                IsSearch = true,
-                IsAdvanceSearch = isAdvanceSearch
-            });
+                resultArray[row + 1, col] = dataTable.Rows[row][col].ToString();
+            }
+        }
+
+        return resultArray;
+    }
+
+    static string ArrayToCsvString(string[,] array)
+    {
+        int rowCount = array.GetLength(0);
+        int colCount = array.GetLength(1);
+
+        StringBuilder csvBuilder = new StringBuilder();
+
+        // 遍历二维数组并构建CSV字符串
+        for (int row = 0; row < rowCount; row++)
+        {
+            for (int col = 0; col < colCount; col++)
+            {
+                // 将每个元素添加到CSV字符串中
+                csvBuilder.Append(array[row, col]);
+
+                // 添加逗号分隔符，除非是行末尾
+                if (col < colCount - 1)
+                {
+                    csvBuilder.Append(",");
+                }
+            }
+
+            // 添加换行符，除非是数组的最后一行
+            if (row < rowCount - 1)
+            {
+                csvBuilder.AppendLine();
+            }
+        }
+
+        return csvBuilder.ToString();
     }
 }

@@ -2,11 +2,11 @@
   "DbPath": "F:\\C#Project\\BlazorDataBoard\\DataManager.Database.Test\\LIBSDataBase",
   "TableDictionary": [
     {
-      "WorkPosition": "地点1",
+      "WorkPosition": "JGSS-CDLZ-1#",
       "TableName": "IngredientTbl_192_168_1_4New"
     },
     {
-      "WorkPosition": "地点2",
+      "WorkPosition": "JGSS-CT-2#",
       "TableName": "IngredientTbl_192_168_1_5New"
     },
     {

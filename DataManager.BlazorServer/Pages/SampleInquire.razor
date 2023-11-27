@@ -5,6 +5,7 @@
 @using System.Data
 @using MiniExcelLibs
 @inject MessageService MessageService
+@inject CsvExport Export
 
 <h3>样品数据查询</h3>
 <p></p>
@@ -16,18 +17,18 @@
 <p></p>
 <div>
     <Table TItem="DynamicObject" DynamicContext="DataTableDynamicContext"
-        IsMultipleSelect="true" IsBordered="false" IsStriped="true"
+        IsBordered="true" IsStriped="true"
         ShowToolbar="true" ShowAddButton="false" ShowEditButton="false" ShowDeleteButton="false"
-        ShowExportButton="true" IsFixedHeader="true"
-        IsPagination="true">
+        ShowExportButton="true" IsFixedHeader="true" ShowLineNo="true" AllowResizing="true"
+        ClientTableName="myTable" RenderMode="TableRenderMode.Table">
         <ExportButtonDropdownTemplate>
+            <div class="dropdown-item" @onclick="OnExportCsv">
+                <i class="fa-regular fa-file-excel"></i>
+                <span>导出到CSV</span>
+            </div>
             <div class="dropdown-item" @onclick="ClipBoardExportAsync">
                 <i class="fa-regular fa-file-excel"></i>
-                <span>导出当前页到剪切板</span>
-            </div>
-            <div class="dropdown-item" @onclick="OnExportCsv">
-                <i class="fa-regular fa-file-excel" ></i>
-                <span>导出到CSV</span>
+                <span>复制到剪切板</span>
             </div>
         </ExportButtonDropdownTemplate>
     </Table>
@@ -40,16 +41,8 @@
     [NotNull]
     private ClipboardService? ClipboardService { get; init; }
 
-    [Inject]
-    [NotNull]
-    private CsvExport? Export { get; set; }
-
-    private static IEnumerable<int> PageItemsSource => new int[] {  20, 30 };
-
     [NotNull]
     private DataTableDynamicContext? DataTableDynamicContext { get; set; }
-
-    public DateTimeRangeValue? SearchDate { get; set; }
 
     private DataTableDynamicContext InitTable()
     {

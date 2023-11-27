@@ -9,7 +9,7 @@ namespace DataManager.BlazorServer.Shared
     /// </summary>
     public sealed partial class MainLayout
     {
-        private bool UseTabSet { get; set; } = true;
+        private bool UseTabSet { get; set; } = false;
 
         private string Theme { get; set; } = "";
 
@@ -31,7 +31,6 @@ namespace DataManager.BlazorServer.Shared
         protected override void OnInitialized()
         {
             base.OnInitialized();
-
             Menus = GetIconSideMenuItems();
         }
 

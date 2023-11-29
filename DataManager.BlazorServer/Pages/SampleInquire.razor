@@ -14,7 +14,7 @@
         <StandardDataSearch QueryClick="@OnQueryDataAsync"/>
     </GroupBox>
 </div>
-<p></p>
+<p>通过拖拽后的列宽，再次查询会保持上次结果</p>
 <div>
     <Table TItem="DynamicObject" DynamicContext="DataTableDynamicContext"
         IsBordered="true" IsStriped="true"
@@ -68,6 +68,7 @@
         {
             await ShowColorMessage(Color.Danger, "未查询到符合条件的数据!");
         }
+        StateHasChanged();
     }
 
     private async Task ShowColorMessage(Color color,string msg)

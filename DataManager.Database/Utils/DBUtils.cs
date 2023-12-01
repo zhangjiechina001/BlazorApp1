@@ -7,7 +7,7 @@ namespace DataManager.Database.Utils
     {
         public static StandDataList Inquire(string tableName)
         {
-            var entity=SqliteDatabase.GetInstance().Inquire("IngredientTbl_192_168_1_4New").Select(t=>t.ToStandardData()).ToList();
+            var entity=SqliteDatabase.GetInstance().Inquire(tableName).Select(t=>t.ToStandardData()).ToList();
             return new StandDataList(entity);
         }
 

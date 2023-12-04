@@ -11,7 +11,7 @@
 <p></p>
 <div>
     <GroupBox Title="搜索条件">
-        <StandardDataSearch QueryClick="@OnQueryDataAsync"/>
+        <SampleSearch QueryClick="@OnQueryDataAsync"/>
     </GroupBox>
 </div>
 <p>通过拖拽后的列宽，再次查询会保持上次结果</p>
@@ -59,10 +59,10 @@
 
     private async Task OnQueryDataAsync(StandardDataSearchModel args)
     {
-        var myList = DBUtils.Inquire(args);
+        var myList = DBUtils.Inquire(args).OrderByDescending(t => t.DateTime);
         if(myList.Any())
         {
-            DataTableDynamicContext = new DataTableDynamicContext(myList.GetDataTeble());
+            DataTableDynamicContext = new DataTableDynamicContext(new StandDataList(myList).GetDataTeble());
         }
         else
         {

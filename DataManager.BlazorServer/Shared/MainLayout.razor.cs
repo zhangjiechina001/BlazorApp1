@@ -38,7 +38,8 @@ namespace DataManager.BlazorServer.Shared
         {
             var menus = new List<MenuItem>
             {
-                new MenuItem() { Text = "样品数据查看", Icon = "fa-solid fa-fw fa-table", Url = "sample-inquire" }
+                new MenuItem() { Text = "样品数据查看", Icon = "fa-solid fa-fw fa-table", Url = "sample-inquire" },
+                new MenuItem() { Text = "Login", Icon = "fa-solid fa-fw fa-table", Url = "template6" }
             };
 
             return menus;

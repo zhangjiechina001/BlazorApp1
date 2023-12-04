@@ -1,7 +1,11 @@
-﻿<BootstrapBlazorRoot>
+﻿@using System.Security.Claims
+
+@inject NavigationManager NavigationManager
+
+<BootstrapBlazorRoot>
     <Router AppAssembly="@typeof(MainLayout).Assembly">
         <Found Context="routeData">
-            <PageTitle>Bootstrap Blazor Project Template</PageTitle>
+            <PageTitle>数据远程看板</PageTitle>
             <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
         </Found>
         <NotFound>
@@ -12,3 +16,45 @@
         </NotFound>
     </Router>
 </BootstrapBlazorRoot>
+
+
+@code {
+
+    // private void PermissionCheck(NavigationContext context)
+    // {
+    //     var whiteList = Furion.App.Configuration["WhiteList"];
+    //     if (whiteList != null && whiteList.Split(',').Contains(context.Path))
+    //     {
+    //         return;
+    //     }
+
+    //     var user = Furion.App.User;
+    //     if (user == null)
+    //     {
+    //         NavigationManager.NavigateTo("/Login");
+    //         return;
+    //     }
+
+    //     if (user.Identity?.IsAuthenticated != true)
+    //     {
+    //         NavigationManager.NavigateTo("/Login");
+    //         return;
+    //     }
+
+    //     if (!int.TryParse(user.FindFirst(ClaimTypes.Role)?.Value, out var roleId))
+    //     {
+    //         NavigationManager.NavigateTo("/Login");
+    //         return;
+    //     }
+
+    //     var permission = MenuEntity
+    //         .Where(x => x.Roles!.Any(y => y.Id == roleId) && x.Url == context.Path).First();
+
+    //     if (permission == null)
+    //     {
+    //         NavigationManager.NavigateTo("/Login");
+    //     }
+
+    // }
+
+}

@@ -4,6 +4,8 @@ using System.Text;
 using DataManager.Database.Utils;
 using Newtonsoft.Json.Linq;
 using BootstrapBlazor.Components;
+using BlazorLearn;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 public class Program
 {
@@ -11,12 +13,17 @@ public class Program
     {
         InitDb();
 
-        var builder = WebApplication.CreateBuilder(args);
+        var builder = WebApplication.CreateBuilder(args).Inject();
+
+        builder.Services.AddAppAuthorization<AdminHandler>();
+
         // Add services to the container.
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
         builder.Services.AddRazorPages();
         builder.Services.AddServerSideBlazor();
+
+        builder.Services.AddControllers().AddInject();
 
         builder.Services.AddBootstrapBlazor();
         builder.Services.AddSingleton<MessageService>();
@@ -24,8 +31,7 @@ public class Program
         // 增加 Table Excel 导出服务
         builder.Services.AddCsvExport();
 
-        // 增加 Table 数据服务操作类
-        builder.Services.AddTableDemoDataService();
+        //builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
 
         var app = builder.Build();
 
@@ -37,10 +43,19 @@ public class Program
         {
             app.UseExceptionHandler("/Error");
         }
+        app.UseHttpsRedirection();
+
+        app.UseInject();
 
         app.UseStaticFiles();
 
         app.UseRouting();
+
+        app.UseAuthentication();
+        app.UseAuthorization();
+
+        app.MapDefaultControllerRoute();
+        //app.UseRouting();
         app.MapBlazorHub();
         app.MapFallbackToPage("/_Host");
 

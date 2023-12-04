@@ -1,0 +1,50 @@
+﻿@using System.Diagnostics.CodeAnalysis;
+@using DataManager.Database.Data;
+
+<div class="row form-inline g-3">
+    <div class="col-12 col-sm-4">
+        <Select @bind-Value="Value.WorkPosition" Items="@WorkPositions" ShowLabel="true" DisplayText="设备名:" />
+    </div>
+    <div class="col-12 col-sm-4">
+        <DateTimeRange @bind-Value="Value.SearchDate" ShowLabel="true" DisplayText="时间:" />
+    </div>
+    <div class="col-12 col-sm-4">
+        <Button  ShowLabel="true" OnClick="OnClick"> 查询 </Button>
+    </div>
+</div>
+
+@code
+{
+    public List<SelectedItem> WorkPositions { get; set; } = new();
+
+    protected override Task OnInitializedAsync()
+    {
+        WorkPositions = SqliteDatabase.GetInstance().TableDictionaryItemList.Select(t => new SelectedItem(t.TableName, t.WorkPosition)).ToList();
+        return base.OnInitializedAsync();
+    }
+
+    /// <summary>
+    ///
+    /// </summary>
+    [Parameter]
+    [NotNull]
+    public StandardDataSearchModel? Value { get; set; } = new StandardDataSearchModel();
+
+    /// <summary>
+    ///
+    /// </summary>
+    [Parameter]
+    public EventCallback<StandardDataSearchModel> ValueChanged { get; set; }
+
+    private void OnClick(MouseEventArgs? args)
+    {
+        QueryClick.InvokeAsync(Value);
+    }
+
+    /// <summary>
+    /// 获得/设置 OnClick 事件
+    /// </summary>
+    [Parameter]
+    public EventCallback<StandardDataSearchModel> QueryClick { get; set; }
+
+}

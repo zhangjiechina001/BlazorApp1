@@ -1,0 +1,64 @@
+﻿@using System.Security.Claims
+@using BlazorLearn.Entity
+
+@inject NavigationManager NavigationManager
+
+<BootstrapBlazorRoot>
+    <Router AppAssembly="@typeof(App).Assembly">
+        <Found Context="routeData">
+            <AuthorizeRouteView Resource="@routeData" RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <NotAuthorized>
+                    <RedirectToLogin></RedirectToLogin>
+                </NotAuthorized>
+            </AuthorizeRouteView>
+            <FocusOnNavigate RouteData="@routeData" Selector="h1"/>
+        </Found>
+        <NotFound>
+            <PageTitle>Not found</PageTitle>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p role="alert">Sorry, there's nothing at this address.</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</BootstrapBlazorRoot>
+
+@code {
+
+    private void PermissionCheck(NavigationContext context)
+    {
+        var whiteList = Furion.App.Configuration["WhiteList"];
+        if (whiteList != null && whiteList.Split(',').Contains(context.Path))
+        {
+            return;
+        }
+
+        var user = Furion.App.User;
+        if (user == null)
+        {
+            NavigationManager.NavigateTo("/Login");
+            return;
+        }
+
+        if (user.Identity?.IsAuthenticated != true)
+        {
+            NavigationManager.NavigateTo("/Login");
+            return;
+        }
+
+        if (!int.TryParse(user.FindFirst(ClaimTypes.Role)?.Value, out var roleId))
+        {
+            NavigationManager.NavigateTo("/Login");
+            return;
+        }
+
+        var permission = MenuEntity
+            .Where(x => x.Roles!.Any(y => y.Id == roleId) && x.Url == context.Path).First();
+
+        if (permission == null)
+        {
+            NavigationManager.NavigateTo("/Login");
+        }
+
+    }
+
+}

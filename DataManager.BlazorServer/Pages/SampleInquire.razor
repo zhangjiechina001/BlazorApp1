@@ -46,6 +46,7 @@
 
     private DataTableDynamicContext InitTable()
     {
+
         var myList=StandDataList.CreateSampleList();
         DataTableDynamicContext result = new DataTableDynamicContext(myList.GetDataTeble());
         return result;
@@ -54,7 +55,7 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        DataTableDynamicContext = InitTable();
+        // DataTableDynamicContext = InitTable();
     }
 
     private async Task OnQueryDataAsync(StandardDataSearchModel args)
@@ -63,6 +64,24 @@
         if(myList.Any())
         {
             DataTableDynamicContext = new DataTableDynamicContext(new StandDataList(myList).GetDataTeble());
+            Dictionary<string, int> widthDic = new Dictionary<string, int>()
+            {
+                {"时间",180 },
+                {"样品编号",80},
+                {"行号",10},
+                {"类型",30}
+            };
+            foreach (var item in DataTableDynamicContext.GetColumns())
+            {
+                if (widthDic.ContainsKey(item.Text))
+                {
+                    item.Width = widthDic[item.Text];
+                }
+                else
+                {
+                    item.Width = 50;
+                }
+            } 
         }
         else
         {

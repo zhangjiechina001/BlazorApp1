@@ -15,12 +15,46 @@ namespace DataManager.Database.Data
 
         public List<string> GetAllFactors()
         {
-            return this.First().Items.Select(x => x.FactorName).ToList();
+            HashSet<string> result = new HashSet<string>();
+            foreach (StandardData item in this)
+            {
+                var factors = item.Items.Select(x => x.FactorName);
+                foreach (var factor in factors)
+                {
+                    result.Add(factor);
+                }
+            }
+            if (result.Contains("None"))
+            {
+                result.Remove("None");
+            }
+            return result.ToList();
         }
 
         public List<string> GetAllSampleTypes()
         {
             return this.Select(t => t.MaterialType).Distinct().ToList();
+        }
+
+        public List<StandardData> GetFormatList(Dictionary<string, string> formatDic)
+        {
+            List<StandardData> result = new List<StandardData>();
+            for (int i = 0; i < this.Count; i++)
+            {
+                StandardData cloneData = (this[i].Clone() as StandardData)!;
+                cloneData.Items.Clear();
+                foreach (var item in this[i].Items)
+                {
+                    if (formatDic.ContainsKey(item.FactorName))
+                    {
+                        item.SetFormat(formatDic[item.FactorName]);
+                        cloneData.Items.Add(item);
+                    }
+                }
+                result.Add(cloneData);
+            }
+            return result;
+
         }
 
         public List<double> GetFactorValue(string factor)
@@ -32,7 +66,7 @@ namespace DataManager.Database.Data
         public SysDataTable GetDataTeble()
         {
             SysDataTable table = new SysDataTable();
-            List<string> headers = new List<string>() { "时间", "样品编号", "类型" };
+            List<string> headers = new List<string>() { "序列", "时间", "样品编号", "类型" };
             int headerIndex = headers.Count();
             headers.AddRange(this.GetAllFactors());
             foreach (var item in headers)
@@ -43,11 +77,12 @@ namespace DataManager.Database.Data
             {
                 var newRow = table.NewRow();
                 var item = this[i];
-                newRow[0] = item.DateTime.ToString("yyyy-MM-dd_hh:mm:ss");
-                newRow[1] = item.SampleId;
-                newRow[2] = item.MaterialType.Replace("\r","");
+                newRow[0] = item.Id;
+                newRow[1] = item.DateTime.ToString("yyyy-MM-dd_HH:mm:ss");
+                newRow[2] = item.SampleId;
+                newRow[3] = item.MaterialType.Replace("\r", "");
 
-                if (item.MaterialType=="未知")
+                if (item.MaterialType == "未知")
                 {
                     for (int j = 0; j < table.Columns.Count - headerIndex; j++)
                     {
@@ -58,7 +93,9 @@ namespace DataManager.Database.Data
                 {
                     for (int j = 0; j < table.Columns.Count - headerIndex; j++)
                     {
-                        newRow[headerIndex + j] = item.Items[j].Value == null ? "--" : item.Items[j].Value.Value.ToString("G4");
+                        string factorName = headers[j + headerIndex];
+                        var val = item.GetFactorValue(factorName);
+                        newRow[headerIndex + j] = val == null ? "--" : val.Value.ToString("G4");
                     }
                 }
                 table.Rows.Add(newRow);
@@ -69,8 +106,8 @@ namespace DataManager.Database.Data
 
         public static StandDataList CreateSampleList()
         {
-            StandDataList result=new StandDataList();
-            DateTime dt= DateTime.Now;
+            StandDataList result = new StandDataList();
+            DateTime dt = DateTime.Now;
             for (int i = 0; i < 10; i++)
             {
                 StandardData item = new StandardData()
